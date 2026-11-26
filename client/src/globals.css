@@ -1,0 +1,19 @@
+/* Single source of truth for color and layout across every section of this
+   app. The overall UI is light; only the calendar date states (holiday,
+   exam windows, term start) use dark/saturated fills so they pop against
+   the white grid -- matching the institute's own printed calendar look.
+
+   Split by topic across styles/*.css, imported below in the SAME order
+   they used to appear in this one file -- @import order is load order, and
+   load order is what cascade ties (equal-specificity rules) resolve on, so
+   this ordering must not be reshuffled without checking for such ties. */
+@import "./styles/tokens.css";
+@import "./styles/layout.css";
+@import "./styles/login.css";
+@import "./styles/sidebar.css";
+@import "./styles/browse.css";
+@import "./styles/chrome.css";
+@import "./styles/dashboard.css";
+@import "./styles/forms.css";
+@import "./styles/document.css";
+@import "./styles/print.css";

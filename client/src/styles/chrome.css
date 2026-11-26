@@ -1,0 +1,59 @@
+/* Vertical academic-year banner along the page edge -- stretches to the
+   full height of the page's content (not just the viewport, and not just
+   wrapping its own text), so the navy strip runs the entire length of the
+   page no matter how far you scroll, instead of stopping partway down. */
+.year-band {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  background: var(--navy);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: 8px;
+  padding: 16px 8px;
+  white-space: nowrap;
+  align-self: stretch;
+}
+
+/* Header */
+.app-header {
+  background: linear-gradient(135deg, var(--navy-500) 0%, var(--navy-700) 100%);
+  color: var(--white);
+  padding: 14px 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  box-shadow: var(--shadow-md);
+}
+.app-header h1 {
+  font-size: var(--text-2xl);
+}
+.app-header .sub {
+  font-size: var(--text-xs);
+  opacity: 0.85;
+  margin-top: 2px;
+}
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Shared row for whatever admin generate-controls apply (a button, or the
+   full CoordinatorForm, or nothing) alongside the "browse hierarchy"
+   trigger (see OrgHierarchySection.jsx/calendar.jsx) -- align-items:
+   flex-start so a wide CoordinatorForm on the left doesn't stretch/center
+   the trigger button beside it, flex-wrap so they stack cleanly on narrow
+   screens instead of overflowing. */
+.page-toolbar-row {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}

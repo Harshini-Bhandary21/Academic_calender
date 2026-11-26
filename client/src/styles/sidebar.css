@@ -1,0 +1,220 @@
+/* Left-hand Year -> Term navigation. Categories intentionally aren't a
+   third sidebar level -- they render as cards in the main content area
+   once a term is picked (see .category-cards below). */
+.calendar-sidebar {
+  flex: 0 0 240px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 14px;
+  /* No align-self override -- inherits "stretch" from .page-frame so this
+     box's own background/border runs the full row height, matching the
+     calendar content beside it, instead of shrink-wrapping to just the
+     "Academic Years" list and leaving a short box in a sea of empty
+     space. The nav content itself still sticks near the top as the page
+     scrolls. */
+  position: sticky;
+  top: 16px;
+  box-shadow: var(--shadow-sm);
+  animation: fade-in-up 0.35s var(--ease) backwards;
+}
+/* A thin 1px --border divider, not the old thick 2px solid-navy underline
+   -- that heavy colored-rule-under-every-heading motif (also removed from
+   .card h2, see forms.css) was one of the more template-y recurring
+   patterns in the previous system; the heading's own navy color already
+   carries the emphasis without a bar under it too. */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.calendar-sidebar h2 {
+  color: var(--navy);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.sidebar-add-toggle {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--navy);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease);
+}
+.sidebar-add-toggle:hover {
+  background: var(--navy);
+  color: var(--white);
+}
+.sidebar-add-form {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.sidebar-add-form input {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-xs);
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+}
+.sidebar-add-form .btn {
+  padding: 6px 10px;
+  font-size: var(--text-xs);
+}
+.sidebar-row-error {
+  font-size: var(--text-2xs);
+  color: var(--error-fg);
+  padding: 2px 8px 6px;
+}
+.sidebar-year-row,
+.sidebar-term-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.sidebar-year-row .sidebar-year-btn,
+.sidebar-term-row .sidebar-term-btn {
+  flex: 1;
+}
+.sidebar-row-remove {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-md);
+  line-height: 1;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  opacity: 0.35;
+  transition: opacity 0.15s var(--ease), background 0.15s var(--ease), color 0.15s var(--ease);
+}
+.sidebar-year-row:hover .sidebar-row-remove,
+.sidebar-term-row:hover .sidebar-row-remove,
+.sidebar-row-remove:focus-visible {
+  opacity: 1;
+}
+.sidebar-row-remove:hover {
+  background: var(--error-bg);
+  color: var(--error-fg);
+}
+.sidebar-row-remove:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+/* Extra breathing room above "+ Add Term ..." -- without this it sits
+   only the list's normal 2px item gap below the last real term row,
+   which reads as glued-on rather than its own distinct affordance. */
+.sidebar-add-term-row {
+  margin-top: 6px;
+}
+.sidebar-add-term-btn {
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  cursor: pointer;
+  transition: color 0.15s var(--ease), border-color 0.15s var(--ease), background 0.15s var(--ease);
+}
+.sidebar-add-term-btn:hover {
+  color: var(--navy);
+  border-color: var(--navy);
+  background: var(--surface-alt);
+}
+.sidebar-year-list,
+.sidebar-term-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sidebar-term-list {
+  margin: 2px 0 6px 20px;
+  animation: slide-down 0.25s var(--ease);
+  overflow: hidden;
+}
+.sidebar-year-btn,
+.sidebar-term-btn {
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 7px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background var(--duration-fast) var(--ease-snappy), color var(--duration-fast) var(--ease-snappy),
+    transform var(--duration-fast) var(--ease-snappy);
+}
+/* The expand/collapse arrow (ChevronIcon.jsx) -- a plain state toggle
+   (expanded or not), so the rotation is a class, not an inline style. */
+.chevron-icon {
+  transition: transform 0.15s ease;
+}
+.chevron-icon-expanded {
+  transform: rotate(90deg);
+}
+.sidebar-year-btn:hover,
+.sidebar-term-btn:hover {
+  background: var(--surface-alt);
+  transform: translateX(2px);
+}
+.sidebar-term-btn.active {
+  background: var(--navy);
+  color: var(--white);
+  transform: translateX(2px);
+}
+.sidebar-empty {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  font-style: italic;
+  padding: 4px 8px;
+}
+.sidebar-skeleton {
+  padding: 4px 8px;
+}
+.sidebar-fetch-error {
+  padding: 6px 8px;
+  font-size: var(--text-xs);
+  color: var(--error-fg);
+}
+.sidebar-fetch-error p {
+  margin-bottom: 6px;
+}
+.sidebar-fetch-error .btn {
+  padding: 4px 10px;
+  font-size: var(--text-2xs);
+}

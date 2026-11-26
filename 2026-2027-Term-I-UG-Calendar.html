@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026-2027 &middot; Term I &middot; UG Calendar | MIT Academy of Engineering</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { height:100%; }
+body {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  background:#eef1f5; color:#26313d; font-size:14px;
+}
+:root {
+  --bg:#eef1f5; --surface:#ffffff; --surface-alt:#f5f7fa; --navy:#1f4e79;
+  --white:#fff; --border:#c3ccd6; --text:#26313d; --muted:#6b7684;
+  --grid-border:#7c8794; --holiday-hint:#b3564f; --outside-bg:#f4f4f5;
+  --out-bg:#d0d3d7; --out-fg:#a0a0a0;
+  --shadow-xs:0 1px 2px rgba(15,23,32,.05);
+  --shadow-sm:0 1px 3px rgba(15,23,32,.06),0 1px 2px rgba(15,23,32,.04);
+  --shadow-md:0 4px 12px rgba(15,23,32,.08),0 2px 4px rgba(15,23,32,.04);
+  --radius-sm:6px; --radius-md:10px; --radius-lg:14px; --ease:cubic-bezier(.22,1,.36,1);
+}
+/* Fixed to the viewport height (not min-height) + .app-main scrolling
+   internally (overflow-y:auto below) is what pins the footer to the
+   bottom of the screen at all times -- the same technique the live app
+   uses (layout.css's .app-shell/.app-main) -- rather than the footer only
+   coming into view once you've scrolled all the way to the end of a long
+   page. */
+.app-shell { height:100vh; display:flex; flex-direction:column; }
+.app-main { flex:1; min-height:0; overflow-y:auto; }
+
+.page-frame { width:100%; box-sizing:border-box; padding:20px 28px; display:flex; gap:16px; align-items:stretch; }
+.container { flex:1; max-width:1100px; min-width:0; display:flex; flex-direction:column; gap:16px; margin:0 auto; }
+
+.document-header { display:flex; align-items:stretch; border:1px solid var(--grid-border); background:var(--surface); }
+.document-brand { display:flex; align-items:center; gap:12px; padding:10px 18px; border-right:1px solid var(--grid-border); white-space:nowrap; }
+.document-brand-mit { font-size:32px; font-weight:800; letter-spacing:1px; color:var(--navy); }
+.document-brand-divider { width:2px; align-self:stretch; background:var(--grid-border); }
+.document-brand-name { font-size:16px; font-weight:700; color:var(--navy); line-height:1.3; }
+.document-brand-affiliation { display:block; font-size:11px; font-weight:400; color:var(--muted); margin-top:4px; }
+.document-title { flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center; padding:10px 16px; }
+.document-title h1 { font-size:17px; font-weight:800; color:var(--navy); letter-spacing:.5px; }
+.document-subtitle { font-size:12px; color:var(--navy); margin-top:4px; }
+
+.calendar-rows { display:flex; flex-direction:column; gap:12px; }
+.calendar-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.month-block { border:1px solid var(--grid-border); border-radius:var(--radius-sm); overflow:hidden; box-shadow:var(--shadow-sm); }
+.month-header { background:var(--navy); color:var(--white); display:flex; justify-content:space-between; padding:4px 10px; font-weight:700; font-size:13px; }
+.day-names { display:grid; grid-template-columns:repeat(7,1fr); background:var(--surface-alt); }
+.day-names span { text-align:center; padding:3px 0; font-weight:700; font-size:10px; color:var(--navy); }
+.day-names span:first-child { color:var(--holiday-hint); }
+.days-grid { display:grid; grid-template-columns:repeat(7,1fr); }
+.day-cell { position:relative; text-align:center; padding:6px 1px; font-size:11px; font-weight:600; border:1.5px solid var(--grid-border); background:var(--surface); color:var(--text); min-height:28px; }
+.day-cell.outside { background:var(--outside-bg); color:var(--out-fg); }
+.day-cell.empty { background:var(--surface); color:transparent; }
+.day-cell-review { background:var(--out-bg); color:var(--text); text-decoration:underline; }
+.day-cell-milestone { font-weight:800; }
+
+.info-strip { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--border); background:var(--surface); }
+.info-strip-cell { padding:5px 10px; border-left:1px solid var(--border); border-top:1px solid var(--border); font-size:11px; font-weight:700; font-style:italic; color:var(--navy); line-height:1.5; }
+.info-strip-cell:nth-child(3n+1) { border-left:none; }
+.info-strip-cell:nth-child(-n+3) { border-top:none; }
+.info-strip-value { white-space:nowrap; }
+
+.milestone-sheet { display:grid; grid-template-columns:repeat(3,1.3fr) 1fr; gap:0; border:1px solid var(--grid-border); background:var(--surface); }
+.milestone-column { border-left:1px solid var(--grid-border); padding:6px 8px; }
+.milestone-column:first-child { border-left:none; }
+.milestone-row { display:flex; align-items:baseline; gap:6px; font-size:11px; padding:3px 4px; border-bottom:1px solid var(--grid-border); color:var(--text); }
+.milestone-column > .milestone-row:last-child { border-bottom:none; }
+.milestone-label { font-weight:600; }
+.milestone-date { white-space:nowrap; opacity:.85; margin-left:auto; }
+.holiday-column .milestone-row { color:var(--holiday-hint); }
+.holiday-column .milestone-label { font-weight:700; }
+
+.card { background:var(--surface); border-radius:var(--radius-lg); padding:16px 18px; box-shadow:var(--shadow-xs); transition:box-shadow .2s var(--ease); }
+.card:hover { box-shadow:var(--shadow-md); }
+.card h2 { color:var(--navy); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+.contact-card { margin-bottom:28px; }
+.contact-list { display:flex; flex-direction:row; flex-wrap:wrap; gap:16px; }
+.contact-row { display:flex; flex-direction:column; gap:2px; flex:1 1 160px; min-height:32px; justify-content:flex-end; }
+.contact-name { font-weight:700; color:var(--text); font-size:12px; }
+.contact-role { font-weight:600; color:var(--navy); font-size:11px; }
+
+.year-band { writing-mode:vertical-rl; transform:rotate(180deg); background:var(--navy); color:var(--white); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; letter-spacing:2px; border-radius:8px; padding:16px 8px; white-space:nowrap; align-self:stretch; }
+
+/* Bottom credit bar -- matches the live app's Footer.jsx/.app-footer:
+   pinned below the page content, not embedded inside the Contact card. */
+.app-footer { flex-shrink:0; display:flex; align-items:center; justify-content:center; padding:10px 28px; background:var(--surface); border-top:1px solid var(--grid-border); }
+.app-footer-credit { font-size:12px; font-weight:600; color:#55606c; }
+
+@media (max-width:900px) {
+  .page-frame { flex-direction:column; padding:14px; }
+  .calendar-row { grid-template-columns:1fr; }
+  .milestone-sheet { grid-template-columns:1fr; }
+  .year-band { writing-mode:horizontal-tb; transform:none; align-self:auto; padding:8px 16px; }
+}
+@media print {
+  * { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+  @page { size:A4 landscape; margin:8mm; }
+  body { background:#fff; }
+  .app-footer { display:none; }
+  /* The fixed-viewport-height + internal-scroll trick that pins the
+     footer on screen would otherwise clip anything past one page's worth
+     of content when actually printed -- released back to natural height
+     here so the full calendar prints/exports across as many pages as it
+     needs. */
+  .app-shell { height:auto; }
+  .app-main { overflow:visible; }
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <main class="app-main">
+    <div class="page-frame">
+      <div class="container">
+        <header class="document-header">
+      <div class="document-brand">
+        <span class="document-brand-mit">MIT</span>
+        <span class="document-brand-divider"></span>
+        <span class="document-brand-name">Academy of Engineering
+          <span class="document-brand-affiliation">(An Autonomous Institute Affiliated to Savitribai Phule Pune University)</span>
+        </span>
+      </div>
+      <div class="document-title">
+        <h1>INSTITUTIONAL ACADEMIC CALENDAR</h1>
+        <div class="document-subtitle">Second, Third and Final Year B.Tech (Term I), Honor and Minor (Term I)</div>
+      </div>
+    </header>
+        <div class="calendar-rows"><div class="calendar-row"><div class="month-block">
+      <div class="month-header"><span>July</span><span>2026</span></div>
+      <div class="day-names"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="days-grid"><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell outside">1</div><div class="day-cell outside">2</div><div class="day-cell outside">3</div><div class="day-cell outside">4</div><div class="day-cell outside">5</div><div class="day-cell outside">6</div><div class="day-cell outside">7</div><div class="day-cell outside">8</div><div class="day-cell outside">9</div><div class="day-cell outside">10</div><div class="day-cell outside">11</div><div class="day-cell outside">12</div><div class="day-cell outside">13</div><div class="day-cell outside">14</div><div class="day-cell outside">15</div><div class="day-cell outside">16</div><div class="day-cell outside">17</div><div class="day-cell outside">18</div><div class="day-cell outside">19</div><div class="day-cell outside" title="Value Addition Program">20</div><div class="day-cell outside" title="Value Addition Program">21</div><div class="day-cell outside" title="Value Addition Program">22</div><div class="day-cell outside" title="Value Addition Program">23</div><div class="day-cell outside" title="Value Addition Program">24</div><div class="day-cell outside" title="Value Addition Program">25</div><div class="day-cell outside" title="Value Addition Program">26</div><div class="day-cell day-cell-review day-cell-milestone" title="Term commencement | Value Addition Program | Prototyping Phase 1">27</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">28</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">29</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">30</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">31</div><div class="day-cell empty"></div></div>
+    </div><div class="month-block">
+      <div class="month-header"><span>August</span><span>2026</span></div>
+      <div class="day-names"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="days-grid"><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">1</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">2</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">3</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">4</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">5</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">6</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1 | Summer Internship Review">7</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">8</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">9</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">10</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">11</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">12</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">13</div><div class="day-cell day-cell-review day-cell-milestone" title="Value Addition Program | Prototyping Phase 1 | TY and B.Tech Project Review I">14</div><div class="day-cell" style="background:#C0392B;color:#fff" title="Independence Day | Value Addition Program | Prototyping Phase 1">15</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">16</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">17</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">18</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">19</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">20</div><div class="day-cell day-cell-review day-cell-milestone" title="Value Addition Program | Prototyping Phase 1 | SY Project Review I">21</div><div class="day-cell" title="Value Addition Program | Prototyping Phase 1">22</div><div class="day-cell" title="Prototyping Phase 1">23</div><div class="day-cell" title="Prototyping Phase 1">24</div><div class="day-cell" title="Prototyping Phase 1">25</div><div class="day-cell" style="background:#C0392B;color:#fff" title="Eid-e-Milad | Prototyping Phase 1">26</div><div class="day-cell day-cell-review day-cell-milestone" title="Prototyping Phase 1 | Student&#x27;s Feedback I">27</div><div class="day-cell" title="Prototyping Phase 1">28</div><div class="day-cell" title="Prototyping Phase 1">29</div><div class="day-cell" title="Prototyping Phase 1">30</div><div class="day-cell" title="Prototyping Phase 1">31</div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div></div>
+    </div><div class="month-block">
+      <div class="month-header"><span>September</span><span>2026</span></div>
+      <div class="day-names"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="days-grid"><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">1</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">2</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">3</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">4</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">5</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">6</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">7</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">8</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">9</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">10</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">11</div><div class="day-cell" title="Prototyping Phase 1 | Academic Audit">12</div><div class="day-cell" title="Academic Audit">13</div><div class="day-cell" style="background:#C0392B;color:#fff" title="Ganesh Chaturthi | Academic Audit | Prototyping Phase 2">14</div><div class="day-cell" title="Academic Audit | Prototyping Phase 2">15</div><div class="day-cell" title="Academic Audit | Prototyping Phase 2">16</div><div class="day-cell" title="Academic Audit | Prototyping Phase 2">17</div><div class="day-cell day-cell-review day-cell-milestone" title="Academic Audit | Prototyping Phase 2 | SY, TY and B.Tech Project Review II | Academic Awareness Activities">18</div><div class="day-cell" title="Academic Audit | Prototyping Phase 2">19</div><div class="day-cell" title="Academic Audit | Prototyping Phase 2">20</div><div class="day-cell" style="background:#BBD8F0;color:#1a1a1a" title="Academic Audit | Prototyping Phase 2 | Mid-Sem Exams | AMCAT Assessment (TY)">21</div><div class="day-cell" style="background:#BBD8F0;color:#1a1a1a" title="Academic Audit | Prototyping Phase 2 | Mid-Sem Exams | AMCAT Assessment (TY)">22</div><div class="day-cell" style="background:#BBD8F0;color:#1a1a1a" title="Academic Audit | Prototyping Phase 2 | Mid-Sem Exams | AMCAT Assessment (TY)">23</div><div class="day-cell" style="background:#BBD8F0;color:#1a1a1a" title="Academic Audit | Prototyping Phase 2 | Mid-Sem Exams | AMCAT Assessment (TY)">24</div><div class="day-cell" style="background:#C0392B;color:#fff" title="Anant Chaturdashi | Academic Audit | Prototyping Phase 2 | Mid-Sem Exams | AMCAT Assessment (TY)">25</div><div class="day-cell" style="background:#BBD8F0;color:#1a1a1a" title="Academic Audit | Prototyping Phase 2 | Mid-Sem Exams | AMCAT Assessment (TY)">26</div><div class="day-cell" style="background:#BBD8F0;color:#1a1a1a" title="Academic Audit | Prototyping Phase 2 | Mid-Sem Exams">27</div><div class="day-cell" style="background:#BBD8F0;color:#1a1a1a" title="Academic Audit | Prototyping Phase 2 | Mid-Sem Exams">28</div><div class="day-cell" title="Academic Audit | Prototyping Phase 2">29</div><div class="day-cell" title="Academic Audit | Prototyping Phase 2">30</div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div></div>
+    </div></div><div class="calendar-row"><div class="month-block">
+      <div class="month-header"><span>October</span><span>2026</span></div>
+      <div class="day-names"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="days-grid"><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell" title="Prototyping Phase 2">1</div><div class="day-cell" style="background:#C0392B;color:#fff" title="Gandhi Jayanti | Prototyping Phase 2">2</div><div class="day-cell" title="Prototyping Phase 2">3</div><div class="day-cell" title="Prototyping Phase 2">4</div><div class="day-cell" title="Prototyping Phase 2 | AMCAT Assessment (SY) | Industry Practicum Mid-term Evaluation">5</div><div class="day-cell" title="Prototyping Phase 2 | AMCAT Assessment (SY) | Industry Practicum Mid-term Evaluation">6</div><div class="day-cell" title="Prototyping Phase 2 | AMCAT Assessment (SY) | Industry Practicum Mid-term Evaluation">7</div><div class="day-cell" title="Prototyping Phase 2 | AMCAT Assessment (SY) | Industry Practicum Mid-term Evaluation">8</div><div class="day-cell" title="Prototyping Phase 2 | AMCAT Assessment (SY) | Industry Practicum Mid-term Evaluation">9</div><div class="day-cell" title="Prototyping Phase 2 | AMCAT Assessment (SY) | Industry Practicum Mid-term Evaluation">10</div><div class="day-cell" title="Prototyping Phase 2">11</div><div class="day-cell" title="Prototyping Phase 2">12</div><div class="day-cell" title="Prototyping Phase 2">13</div><div class="day-cell" title="Prototyping Phase 2">14</div><div class="day-cell" title="Prototyping Phase 2">15</div><div class="day-cell day-cell-review day-cell-milestone" title="Prototyping Phase 2 | SY Project Review III">16</div><div class="day-cell" title="Prototyping Phase 2">17</div><div class="day-cell" title="Prototyping Phase 2">18</div><div class="day-cell" title="Prototyping Phase 2">19</div><div class="day-cell" style="background:#C0392B;color:#fff" title="Dusshera | Prototyping Phase 2">20</div><div class="day-cell" title="Prototyping Phase 2">21</div><div class="day-cell" title="Prototyping Phase 2">22</div><div class="day-cell day-cell-review day-cell-milestone" title="Prototyping Phase 2 | TY Project Review III">23</div><div class="day-cell" title="Prototyping Phase 2">24</div><div class="day-cell" title="Prototyping Phase 2">25</div><div class="day-cell day-cell-review day-cell-milestone" title="Prototyping Phase 2 | Provisional Detention List | Make-up/Remedial Sessions">26</div><div class="day-cell" title="Prototyping Phase 2 | Make-up/Remedial Sessions">27</div><div class="day-cell" title="Prototyping Phase 2 | Make-up/Remedial Sessions">28</div><div class="day-cell" title="Prototyping Phase 2 | Make-up/Remedial Sessions">29</div><div class="day-cell day-cell-review day-cell-milestone" title="Prototyping Phase 2 | Make-up/Remedial Sessions | B.Tech Project Review III">30</div><div class="day-cell" title="Prototyping Phase 2 | Make-up/Remedial Sessions">31</div></div>
+    </div><div class="month-block">
+      <div class="month-header"><span>November</span><span>2026</span></div>
+      <div class="day-names"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="days-grid"><div class="day-cell" title="Prototyping Phase 2 | Make-up/Remedial Sessions">1</div><div class="day-cell" title="Prototyping Phase 2 | Make-up/Remedial Sessions">2</div><div class="day-cell" title="Prototyping Phase 2 | Make-up/Remedial Sessions">3</div><div class="day-cell day-cell-review day-cell-milestone" title="Prototyping Phase 2 | Make-up/Remedial Sessions | Student&#x27;s Feedback II">4</div><div class="day-cell day-cell-review day-cell-milestone" title="Prototyping Phase 2 | Make-up/Remedial Sessions | Final Detention">5</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">6</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">7</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">8</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">9</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">10</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">11</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">12</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">13</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">14</div><div class="day-cell" style="background:#CDE7D4;color:#1a1a1a" title="Non-Instructional Days">15</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">16</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">17</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">18</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">19</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">20</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">21</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">22</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">23</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">24</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination">25</div><div class="day-cell" style="background:#D9CBEC;color:#1a1a1a" title="Practical Examination | MDM TY and B.Tech Practical Exam">26</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination">27</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination">28</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination">29</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination">30</div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell empty"></div></div>
+    </div><div class="month-block">
+      <div class="month-header"><span>December</span><span>2026</span></div>
+      <div class="day-names"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="days-grid"><div class="day-cell empty"></div><div class="day-cell empty"></div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination | Industry Practicum End-term Review (Slot 1)">1</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination | Industry Practicum End-term Review (Slot 1)">2</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination | Industry Practicum End-term Review (Slot 1)">3</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination | Industry Practicum End-term Review (Slot 1)">4</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination | Industry Practicum End-term Review (Slot 1)">5</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination">6</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination">7</div><div class="day-cell" style="background:#F5D9A8;color:#1a1a1a" title="End-Semester Examination">8</div><div class="day-cell" style="background:#F0C9DD;color:#1a1a1a" title="SY Project Examination">9</div><div class="day-cell" style="background:#F0C9DD;color:#1a1a1a" title="TY Project Examination">10</div><div class="day-cell" style="background:#F0C9DD;color:#1a1a1a" title="BTech Project Examination">11</div><div class="day-cell day-cell-review day-cell-milestone" title="Term end">12</div><div class="day-cell outside">13</div><div class="day-cell outside" title="Industry Practicum End-term Review (Slot 2)">14</div><div class="day-cell outside" title="Industry Practicum End-term Review (Slot 2)">15</div><div class="day-cell outside" title="Industry Practicum End-term Review (Slot 2)">16</div><div class="day-cell outside" title="Industry Practicum End-term Review (Slot 2)">17</div><div class="day-cell outside" title="Industry Practicum End-term Review (Slot 2)">18</div><div class="day-cell outside">19</div><div class="day-cell outside">20</div><div class="day-cell outside">21</div><div class="day-cell outside">22</div><div class="day-cell outside">23</div><div class="day-cell outside">24</div><div class="day-cell" style="background:#C0392B;color:#fff" title="Chritmas">25</div><div class="day-cell outside">26</div><div class="day-cell outside">27</div><div class="day-cell outside">28</div><div class="day-cell outside">29</div><div class="day-cell outside" title="Result Declaration">30</div><div class="day-cell outside">31</div><div class="day-cell empty"></div><div class="day-cell empty"></div></div>
+    </div></div></div>
+        <div class="info-strip"><div class="info-strip-cell"><div>Value Addition Program: <span class="info-strip-value">20 JUL to 22 AUG</span></div><div>Make-up/Remedial Sessions: <span class="info-strip-value">26 OCT to 5 NOV</span></div></div><div class="info-strip-cell"><div>Prototyping Phase 1: <span class="info-strip-value">27 JUL to 12 SEP</span></div><div>Prototyping Phase 2: <span class="info-strip-value">14 SEP to 5 NOV</span></div></div><div class="info-strip-cell"><div>Total Weeks: <span class="info-strip-value">20 WEEKS</span></div><div>Total Instructional Days: <span class="info-strip-value">104 DAYS (80 teaching + 24 exam)</span></div></div><div class="info-strip-cell"><div>AMCAT Assessment TY: <span class="info-strip-value">5 OCT to 10 OCT</span></div><div>AMCAT Assessment SY: <span class="info-strip-value">12 OCT to 17 OCT</span></div></div><div class="info-strip-cell"><div>Summer Internship Review: <span class="info-strip-value">7 AUG</span></div></div><div class="info-strip-cell"><div>Industry Practicum Mid-term Evaluation: <span class="info-strip-value">5 OCT to 10 OCT</span></div><div>Industry Practicum End-term Review (Slot 1): <span class="info-strip-value">1 DEC to 5 DEC</span></div><div>Industry Practicum End-term Review (Slot 2): <span class="info-strip-value">14 DEC to 18 DEC</span></div></div></div>
+        <div class="milestone-sheet"><div class="milestone-column"><div class="milestone-row"><span class="milestone-label">Commencement of Term</span><span class="milestone-date">27 JUL</span></div><div class="milestone-row"><span class="milestone-label">TY and B.Tech Project Review I</span><span class="milestone-date">14 AUG</span></div><div class="milestone-row"><span class="milestone-label">SY Project Review I</span><span class="milestone-date">21 AUG</span></div><div class="milestone-row"><span class="milestone-label">Student&#x27;s Feedback I</span><span class="milestone-date">27 AUG</span></div><div class="milestone-row"><span class="milestone-label">SY, TY and B.Tech Project Review II</span><span class="milestone-date">18 SEP</span></div><div class="milestone-row"><span class="milestone-label">SY Project Review III</span><span class="milestone-date">16 OCT</span></div><div class="milestone-row"><span class="milestone-label">TY Project Review III</span><span class="milestone-date">23 OCT</span></div><div class="milestone-row"><span class="milestone-label">Provisional Detention List</span><span class="milestone-date">26 OCT</span></div><div class="milestone-row"><span class="milestone-label">B.Tech Project Review III</span><span class="milestone-date">30 OCT</span></div><div class="milestone-row"><span class="milestone-label">Student&#x27;s Feedback II</span><span class="milestone-date">4 NOV</span></div><div class="milestone-row"></span></div></div><div class="milestone-column"><div class="milestone-row"><span class="milestone-label">Teaching End and Final Detention List</span><span class="milestone-date">5 NOV</span></div><div class="milestone-row"><span class="milestone-label">Academic Audit</span><span class="milestone-date">1 SEP to 30 SEP</span></div><div class="milestone-row" style="background:#BBD8F0;color:#1a1a1a"><span class="milestone-label">Mid-Sem Exams</span><span class="milestone-date">21 SEP to 28 SEP</span></div><div class="milestone-row" style="background:#D9CBEC;color:#1a1a1a"><span class="milestone-label">Practical Examination</span><span class="milestone-date">16 NOV to 26 NOV</span></div><div class="milestone-row" style="background:#D9CBEC;color:#1a1a1a"><span class="milestone-label">MDM TY and B.Tech Practical Exam</span><span class="milestone-date">26 NOV</span></div><div class="milestone-row" style="background:#F5D9A8;color:#1a1a1a"><span class="milestone-label">End-Semester Examination</span><span class="milestone-date">27 NOV to 8 DEC</span></div><div class="milestone-row" style="background:#F0C9DD;color:#1a1a1a"><span class="milestone-label">SY Project Examination</span><span class="milestone-date">9 DEC</span></div><div class="milestone-row" style="background:#F0C9DD;color:#1a1a1a"><span class="milestone-label">TY Project Examination</span><span class="milestone-date">10 DEC</span></div><div class="milestone-row" style="background:#F0C9DD;color:#1a1a1a"><span class="milestone-label">BTech Project Examination</span><span class="milestone-date">11 DEC</span></div></div><div class="milestone-column"><div class="milestone-row"><span class="milestone-label">Term End (20 weeks)</span><span class="milestone-date">12 DEC</span></div><div class="milestone-row"><span class="milestone-label">Academic Awareness Activities</span><span class="milestone-date">18 SEP</span></div><div class="milestone-row" style="background:#CDE7D4;color:#1a1a1a"><span class="milestone-label">Non-Instructional Days</span><span class="milestone-date">6 NOV to 15 NOV</span></div><div class="milestone-row"><span class="milestone-label">Result Declaration</span><span class="milestone-date">30 DEC</span></div><div class="milestone-row"><span class="milestone-label">Commencement of Term Next Academic Year</span><span class="milestone-date">4 JAN</span></div><div class="milestone-row"><span class="milestone-label">Re-Exam Registration</span><span class="milestone-date">4 JAN to 5 JAN</span></div><div class="milestone-row"><span class="milestone-label">Re-Examination</span><span class="milestone-date">7 JAN to 16 JAN</span></div><div class="milestone-row"><span class="milestone-label">Re-Exam Result Declaration</span><span class="milestone-date">21 JAN</span></div></div><div class="milestone-column holiday-column"><div class="milestone-row"><span class="milestone-label">Independence Day</span><span class="milestone-date">15 AUG</span></div><div class="milestone-row"><span class="milestone-label">Eid-e-Milad</span><span class="milestone-date">26 AUG</span></div><div class="milestone-row"><span class="milestone-label">Ganesh Chaturthi</span><span class="milestone-date">14 SEP</span></div><div class="milestone-row"><span class="milestone-label">Anant Chaturdashi</span><span class="milestone-date">25 SEP</span></div><div class="milestone-row"><span class="milestone-label">Gandhi Jayanti</span><span class="milestone-date">2 OCT</span></div><div class="milestone-row"><span class="milestone-label">Dusshera (Vijayadashami)</span><span class="milestone-date">20 OCT</span></div><div class="milestone-row"><span class="milestone-label">Chritmas</span><span class="milestone-date">25 DEC</span></div></div></div>
+        <div class="card contact-card">
+      <h2>Contact</h2>
+      <div class="contact-list">
+        <div class="contact-row"><span class="contact-name">Mr. Nilesh Baglekar</span><span class="contact-role">Institutional Time Table Coordinator</span></div>
+        <div class="contact-row"><span class="contact-name">Dr. Sunita Barve</span><span class="contact-role">Deputy Director, Academics and Research</span></div>
+        <div class="contact-row"><span class="contact-name">Dr. Ranjana Badre</span><span class="contact-role">Controller of Examination</span></div>
+        <div class="contact-row"><span class="contact-role">Director</span></div>
+      </div>
+    </div>
+      </div>
+      <div class="year-band">2026-2027</div>
+    </div>
+  </main>
+  <footer class="app-footer">
+    <span class="app-footer-credit">Built by Jayesh Jadhav and Team</span>
+  </footer>
+</div>
+</body>
+</html>

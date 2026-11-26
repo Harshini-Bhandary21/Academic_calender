@@ -1,0 +1,209 @@
+/* ---- Compact document sizing: shared by real browser printing (toggled
+   on <body> via beforeprint/afterprint in calendar.jsx) and the "Export as
+   PDF" button's html2canvas capture (which renders in normal screen mode --
+   @media print never applies there, so the button needs a real class to
+   get the same dense, document-like proportions instead of html2canvas
+   capturing the wide interactive web-app layout). Single source of truth
+   for both paths -- there used to be a separate @media print block here;
+   it's been replaced by this class so nothing has to be kept in sync by
+   hand. */
+.print-compact {
+  background: #fff;
+  font-size: var(--text-print-md);
+}
+
+.print-compact .no-print {
+  display: none !important;
+}
+
+/* Inverse of .no-print -- content that only exists for the exported PDF /
+   real print (e.g. the official Proposed-By/Recommended-By/Approved-By
+   signature block), hidden on screen where the public-facing ContactInfo
+   panel takes its place instead. */
+.pdf-only {
+  display: none;
+}
+.print-compact .pdf-only {
+  display: block;
+}
+
+/* Compact spacing only -- deliberately NOT stretched to fill any
+   particular height here. The "Export as PDF" button captures this with
+   html2canvas in normal (unbounded) document flow, then fits the whole
+   captured image to the PDF page in exportPdf.js -- scaling the image as a
+   unit already "fills the page," so the DOM itself should stay
+   content-hugging, not artificially stretched (stretching it here, when
+   .container's height:100% would resolve against the real, tall browser
+   viewport instead of a fixed physical page, is what caused the huge
+   internal gaps between sections). See .print-native below for the one
+   thing that's different for *actual* browser printing. */
+.print-compact .page-frame {
+  max-width: 100%;
+  padding: 0;
+  gap: 4px;
+  /* .page-frame's base `align-items: stretch` (layout.css) exists so the
+     sidebar's box runs the full row height next to the taller calendar
+     content -- but the sidebar is `.no-print` and gone entirely during
+     both capture paths. Left as stretch, it still stretches .container
+     itself: per the flex spec, `align-items: stretch` applies whenever a
+     flex item's cross-size computes to `auto`, and .container's `height:
+     auto` right below is exactly that value -- so it was being force-
+     stretched to the full page-frame height (matching the on-screen
+     viewport) instead of hugging its own shorter compact content, which is
+     what produced the large blank space below the footer in the export. */
+  align-items: flex-start;
+}
+.print-compact .container {
+  height: auto;
+  gap: 4px;
+}
+.print-compact .card {
+  border: none;
+  padding: 0;
+}
+
+/* Real browser printing only (Ctrl+P), added alongside .print-compact --
+   the physical A4 page has a fixed height there (unlike html2canvas's
+   unbounded capture), so it's safe to stretch .container to fill it and
+   let justify-content distribute any leftover space between sections
+   instead of dumping it all after the footer. */
+.print-native.print-compact .container {
+  height: 100%;
+  justify-content: space-between;
+}
+
+.print-compact .document-title h1 {
+  font-size: var(--text-print-2xl);
+}
+.print-compact .document-subtitle {
+  font-size: var(--text-print-lg);
+}
+/* MIT wordmark was shrunk proportionally more than the title (18:13 vs the
+   screen version's 26:17), making it read as noticeably smaller/thinner
+   next to the title in the exported PDF than it does on screen -- bumped
+   back up closer to that on-screen ratio. */
+.print-compact .document-brand-mit {
+  font-size: var(--text-print-3xl);
+}
+.print-compact .document-brand-name {
+  font-size: var(--text-print-xl);
+}
+/* Explicit print-scale override, decoupled from the on-screen size --
+   this line has no width constraint on screen (see document.css: it's
+   deliberately left to size to its own content there, one line, so the
+   brand block can grow to fit it), and without an override here it
+   inherited whatever that on-screen size happened to be. That's fine on
+   screen, but in the compact PDF/print layout it made the brand block
+   wide enough to squeeze .document-title (flex: 1) until the title and
+   subtitle each wrapped onto 2 lines, making the whole header much
+   taller than intended. A small, print-appropriate size here keeps the
+   brand block narrow the way it always was in this layout. */
+.print-compact .document-brand-affiliation {
+  font-size: var(--text-print-xs);
+}
+.print-compact .document-brand {
+  padding: 6px 12px;
+}
+.print-compact .document-title {
+  padding: 6px 12px;
+}
+
+.print-compact .year-band {
+  font-size: var(--text-print-2xl);
+  border-radius: 0;
+  padding: 4px 3px;
+}
+
+.print-compact .calendar-rows {
+  gap: 4px;
+}
+.print-compact .calendar-row {
+  gap: 16px;
+}
+/* Elements across the document (month-block, forms, cards, ...) use
+   fade-in-up/home-title-in/etc entrance animations with `backwards` fill
+   and staggered nth-child delays -- fine on screen, but html2canvas clones
+   the DOM into a fresh subtree before capturing it, which re-triggers
+   those animations on the clone. Depending on exactly when html2canvas
+   samples each element relative to its own delay, it can get captured
+   mid-animation (or before its delay has even elapsed), rendering that
+   element's text/content invisible in the exported PDF even though
+   everything looks correct on screen. Only reproduced with month-block
+   (every month past the first-in-row went blank), but disabling
+   animations/transitions wholesale for the capture is the safe fix -- the
+   static end-state is exactly what the export should show, and nothing
+   under .print-compact is meant to visibly animate anyway. */
+.print-compact * {
+  animation: none !important;
+  transition: none !important;
+}
+.print-compact .month-block {
+  break-inside: avoid;
+}
+.print-compact .month-header {
+  font-size: var(--text-print-md);
+  padding: 1px 6px;
+}
+.print-compact .day-names span {
+  font-size: var(--text-print-2xs);
+  padding: 1px 0;
+}
+.print-compact .day-cell {
+  font-size: var(--text-print-xs);
+  padding: 1px;
+  min-height: 10px;
+}
+
+.print-compact .info-strip-cell {
+  font-size: var(--text-print-xs);
+  padding: 2px 6px;
+  line-height: 1.35;
+}
+
+.print-compact .milestone-column {
+  padding: 2px 4px;
+}
+.print-compact .milestone-row,
+.print-compact .milestone-row-editing {
+  font-size: var(--text-print-xs);
+  padding: 1px 2px;
+  gap: 3px;
+}
+
+.print-compact .sig-block {
+  gap: 6px;
+  margin-top: 2px;
+  padding: 4px 8px 3px;
+}
+.print-compact .sig-col {
+  font-size: var(--text-print-sm);
+}
+.print-compact .sig-label {
+  font-size: var(--text-print-xs);
+  margin-bottom: 8px;
+}
+.print-compact .sig-name {
+  font-size: var(--text-print-sm);
+}
+.print-compact .sig-role {
+  font-size: var(--text-print-xs);
+}
+
+.print-compact .doc-footer {
+  font-size: var(--text-print-xs);
+  padding: 1px 2px;
+}
+
+/* Real browser printing only (Ctrl+P / the OS print dialog) -- @page has
+   no effect on the html2canvas+jsPDF export path below, which sets the
+   PDF's page size/margins directly in code instead. */
+@media print {
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+}

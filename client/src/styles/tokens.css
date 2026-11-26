@@ -1,0 +1,250 @@
+/* Single source of truth for color and layout across every section of this
+   app. The overall UI is light; only the calendar date states (holiday,
+   exam windows, term start) use dark/saturated fills so they pop against
+   the white grid -- matching the institute's own printed calendar look. */
+
+/* Self-hosted (not a Google Fonts CDN reference) so an institute network
+   with restricted/offline external access never loses the font, and no
+   third-party request is made on every page load. One variable file
+   covers the whole 400-800 weight range instead of 5 static files.
+   font-display: swap -- Segoe UI (the fallback below) renders instantly,
+   Inter swaps in once loaded, so there's no invisible-text flash either
+   way. */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Variable.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --surface-alt: #f5f7fa;
+  /* A ramp, not one flat hex -- lets hover/active states be a real color
+     step (e.g. --navy-600 on button hover) instead of the old opacity-dim
+     trick, which was one of the flatter/more dated-reading patterns in
+     the previous system. --navy is kept as an alias for --navy-500 (the
+     original single hex every existing rule already references), so nothing
+     else needs to change just because this ramp now exists. */
+  --navy-50: #eef3f8;
+  --navy-100: #dbe6f0;
+  --navy-200: #b9cee0;
+  --navy-300: #7ea3c4;
+  --navy-400: #4a7ba3;
+  --navy-500: #1f4e79;
+  --navy-600: #1a4266;
+  --navy-700: #153552;
+  --navy-800: #11293f;
+  --navy-900: #0d1f30;
+  --navy: var(--navy-500);
+  /* One secondary hue, used sparingly (secondary/outline hover, a
+     non-navy focus ring option, "live/new" indicators) -- not a full
+     re-brand, navy stays the one primary accent everywhere it already is. */
+  --accent-500: #0ea5a0;
+  --accent-100: #d7f3f1;
+  --white: #fff;
+  --border: #c3ccd6;
+  --text: #26313d;
+  --muted: #6b7684;
+  --text-faint: #a3abb3;
+  /* Darker/more saturated than --border specifically for the calendar
+     grid, whose cells get a pastel background fill -- the general lighter
+     --border would visually wash out next to those fills, so the grid
+     lines need their own stronger, always-visible color. */
+  --grid-border: #7c8794;
+
+  /* Event/holiday/start colors are no longer static CSS -- they come from
+     categoryColors.js as inline styles, so a coordinator can customize
+     them live. This is just the default accent for the Sunday column hint --
+     softened from a dark red to a legible muted rose (a true pastel would
+     be illegible as plain text on white). */
+  --holiday-hint: #b3564f;
+  /* Deliberately lighter than --out-bg (used by the de-emphasized
+     markers below) so "not part of the term at all" and "a real marker,
+     just de-emphasized" stay visually distinct instead of looking
+     identical. */
+  --outside-bg: #f4f4f5;
+  --out-bg: #d0d3d7;
+  --out-fg: #a0a0a0;
+
+  --error-bg: #fdecea;
+  --error-fg: #b3261e;
+  --warning-bg: #fff8e1;
+  --warning-fg: #7f5e00;
+  --success-fg: #1f7a4c;
+  --success-bg: #eaf3ee;
+  --success-border: #cfe4d6;
+
+  /* Ambient elevation is neutral gray-black now, not navy-tinted -- the
+     old shadow-sm/md/lg all carried a rgba(31,78,121,*) navy tint, which
+     applied almost identically to every card/button-hover/modal/nav bar
+     read as one uniform "colored soft-shadow SaaS template" look. Navy
+     tint is kept, but only for the two interactive *focus* rings below,
+     where a brand-colored ring is actually meaningful (it's telling you
+     what you just focused, not just decorating a static surface). */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 32, 0.05);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 32, 0.06), 0 1px 2px rgba(15, 23, 32, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 32, 0.08), 0 2px 4px rgba(15, 23, 32, 0.04);
+  --shadow-lg: 0 12px 28px rgba(15, 23, 32, 0.12), 0 4px 8px rgba(15, 23, 32, 0.05);
+  --shadow-focus-navy: 0 0 0 3px rgba(31, 78, 121, 0.22);
+  --shadow-focus-accent: 0 0 0 3px rgba(14, 165, 160, 0.25);
+
+  /* radius-sm/md are unchanged (existing rules already reference them);
+     xs/lg/xl/full are new -- xs replaces form inputs' hardcoded 4px, lg is
+     for elevated cards, xl replaces category-card/login-card's hardcoded
+     18px/20px, full replaces every hardcoded 999px pill. */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  /* Spacing scale -- didn't exist before (every padding/margin/gap was a
+     hand-typed px value). Not a forced rewrite of existing rules; used in
+     new/touched rules going forward so a mixed state during the rollout
+     is expected, not a bug. */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 12px;
+  --space-6: 16px;
+  --space-7: 20px;
+  --space-8: 24px;
+  --space-9: 32px;
+  --space-10: 40px;
+  --space-11: 48px;
+  --space-12: 64px;
+
+  /* --ease (unchanged) is for entrances (fade-in-up etc.) -- --ease-snappy
+     is a distinct, quicker curve for hover/press micro-interactions, which
+     previously all reused the entrance curve regardless of how short the
+     interaction was. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snappy: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 350ms;
+
+  /* Type scale -- the single source of truth for every font-size in the
+     app. Before this existed, font-size was hand-typed per rule and had
+     drifted into ~40 near-duplicate values (10px/10.5px/11px/11.5px/12px
+     all used for what was meant to be the same "small label" size, etc.)
+     with no way to tell an intentional size from accidental noise. Every
+     rule below is named by role, not just size, so a future change to
+     e.g. "how small a tag/badge reads" is a one-line edit here instead of
+     a find-and-replace across 8 files. */
+  --text-3xs: 10px; /* smallest meta text: level tags, footer, day-names */
+  --text-2xs: 11px; /* milestone rows, info-strip, form labels, document-brand-affiliation */
+  --text-xs: 12px; /* secondary body text, nav links, buttons */
+  --text-sm: 13px; /* card eyebrows, sidebar rows, base UI text */
+  --text-base: 14px; /* default body copy -- matches body's own font-size */
+  --text-md: 15px; /* sidebar section headers */
+  --text-lg: 16px; /* sidebar year rows */
+  --text-xl: 17px; /* document title, login form title */
+  --text-2xl: 18px; /* card/section headings */
+  --text-3xl: 20px; /* brand mark, prominent panel titles */
+  --text-4xl: 22px; /* not-found title, app-header h1 */
+  --text-5xl: 24px; /* login form h1 */
+  --text-6xl: 26px; /* document brand mark, home title */
+  --text-7xl: 30px; /* category-page title */
+  --text-8xl: 42px; /* login brand mark */
+  --text-9xl: 64px; /* not-found error code */
+
+  /* A separate, deliberately much smaller scale used only by print.css's
+     .print-compact mode (real browser printing / the "Export as PDF"
+     capture) -- fitting the whole document on one physical A4 page is a
+     different constraint from on-screen readability, so this is kept as
+     its own named scale rather than reusing the sizes above. */
+  --text-print-2xs: 6px;
+  --text-print-xs: 6.5px;
+  --text-print-sm: 7px;
+  --text-print-md: 8px;
+  --text-print-lg: 9.5px;
+  --text-print-xl: 10px;
+  --text-print-2xl: 14px;
+  --text-print-3xl: 23px;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 400px;
+  }
+}
+@keyframes skeleton-shimmer {
+  from {
+    background-position: -120% 0;
+  }
+  to {
+    background-position: 120% 0;
+  }
+}
+
+/* Generic loading placeholder -- a shimmering gray bar/block used anywhere
+   a "Loading..." text label used to sit, so a pending fetch reads as
+   "content is coming" rather than a plain text flash. */
+.skeleton {
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--surface-alt) 25%, #e8ecf1 50%, var(--surface-alt) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+.skeleton-line {
+  height: 11px;
+  margin: 8px 0;
+}
+.skeleton-block {
+  border-radius: var(--radius-md);
+}
+/* Varied widths so a stack of skeleton lines reads as placeholder text of
+   differing length (a natural loading effect) rather than uniform bars --
+   see Sidebar.jsx's loading state. Named by the exact width so the visual
+   result is unchanged from before these were pulled out of inline styles. */
+.skeleton-w-40 {
+  width: 40%;
+}
+.skeleton-w-50 {
+  width: 50%;
+}
+.skeleton-w-55 {
+  width: 55%;
+}
+.skeleton-w-62 {
+  width: 62%;
+}
+.skeleton-w-70 {
+  width: 70%;
+}
+/* Fixed-height placeholder blocks, named by the exact height so the
+   visual result is unchanged from before these were pulled out of inline
+   styles -- see OrgUnitAdmin.jsx/OrgHierarchyBrowser.jsx/
+   OrgCalendarSection.jsx/OrgCalendarViewer.jsx's loading states. */
+.skeleton-h-52 {
+  height: 52px;
+}
+.skeleton-h-140 {
+  height: 140px;
+}
+.skeleton-h-200 {
+  height: 200px;
+}

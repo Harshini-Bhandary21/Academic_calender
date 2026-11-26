@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1f4e79" />
+
+    <!-- Favicon set -- .ico for legacy browsers/OS chrome, explicit PNG
+         sizes for modern browsers (which prefer an exact-size match over
+         scaling the .ico down), apple-touch-icon for iOS home-screen/
+         bookmark icons. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <title>Academic Calendar | MIT Academy of Engineering</title>
+    <meta
+      name="description"
+      content="Official academic calendar of MIT Academy of Engineering -- browse term-wise UG, PG, and FY schedules, key dates, and holidays for every academic year."
+    />
+
+    <!-- Open Graph / social link previews. og:url and the image URL below
+         are relative to whatever domain this is deployed on -- replace
+         with the real production domain once one is fixed, since these
+         tags are technically supposed to be absolute URLs. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MIT Academy of Engineering" />
+    <meta property="og:title" content="Academic Calendar | MIT Academy of Engineering" />
+    <meta
+      property="og:description"
+      content="Official academic calendar of MIT Academy of Engineering -- browse term-wise UG, PG, and FY schedules, key dates, and holidays for every academic year."
+    />
+    <meta property="og:image" content="/favicon.jpg" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Academic Calendar | MIT Academy of Engineering" />
+    <meta
+      name="twitter:description"
+      content="Official academic calendar of MIT Academy of Engineering -- browse term-wise UG, PG, and FY schedules, key dates, and holidays for every academic year."
+    />
+    <meta name="twitter:image" content="/favicon.jpg" />
+
+    <!-- Structured data for richer Google results (logo, knowledge panel
+         eligibility). "url" is deliberately omitted -- schema.org's
+         EducationalOrganization doesn't require it, and Google's own
+         guidance for it is an absolute production URL, which isn't fixed
+         yet; add it here once the domain is. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "MIT Academy of Engineering",
+        "alternateName": "MITAOE",
+        "logo": "/favicon.jpg"
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,428 @@
+/* Loading placeholder shaped like the real calendar page (a header bar,
+   two rows of month-grid blocks, a key-dates bar) -- see
+   CalendarSkeleton.jsx -- so the layout doesn't jump once real content
+   arrives. */
+.calendar-skeleton-header {
+  height: 64px;
+  margin-bottom: 16px;
+}
+.calendar-skeleton-row {
+  margin-bottom: 12px;
+}
+.calendar-skeleton-row-last {
+  margin-bottom: 16px;
+}
+.calendar-skeleton-month {
+  height: 180px;
+}
+.calendar-skeleton-footer {
+  height: 90px;
+}
+
+/* Homepage / "nothing selected yet" landing view -- deliberately just the
+   same header language as .category-page below (see HomePage.jsx), plus
+   one plain line pointing at the sidebar. No year/term list duplicated
+   here -- that already lives in the sidebar alone. */
+@keyframes home-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* text-align: center here (not just on .category-page-header, which only
+   covers the eyebrow/title/subtitle above it) -- .home-hint is a sibling
+   *outside* that header block, so without this it fell back to the
+   card's default left alignment, sitting flush against the left edge
+   underneath an otherwise fully centered page. */
+.card.home-page {
+  text-align: center;
+}
+/* A real highlighted callout, not plain muted text -- this is the one
+   actionable instruction on the whole page (where to actually click), so
+   it needs to visually stand out rather than blend in as a caption.
+   inline-block so the callout box hugs its own text width and centers as
+   a unit (via the parent's text-align: center above) instead of
+   stretching full width. */
+.home-hint {
+  display: inline-block;
+  color: var(--navy-700);
+  font-size: var(--text-base);
+  font-weight: 700;
+  background: var(--navy-50);
+  border: 1px solid var(--navy-100);
+  border-left: 4px solid var(--navy-500);
+  border-radius: var(--radius-sm);
+  padding: 14px 22px;
+  animation: home-title-in 0.55s var(--ease) 0.15s backwards;
+}
+
+.card.category-page {
+  padding: 32px 28px 44px;
+}
+.category-page-header {
+  text-align: center;
+  padding: 10px 8px 34px;
+  margin-bottom: 36px;
+  border-bottom: 1px solid var(--border);
+}
+.category-page-eyebrow {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--navy);
+  opacity: 0.7;
+  margin-bottom: 12px;
+  animation: home-title-in 0.5s var(--ease) backwards;
+}
+/* Extra ".category-page" ancestor class (not just ".category-page-title")
+   is needed here so this beats the generic ".card h2" rule's specificity
+   -- both are one class + one type selector otherwise, and ".card h2"
+   comes first in the file, so it would silently win ties without this. */
+.category-page .category-page-title {
+  font-size: var(--text-7xl);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--navy);
+  margin-bottom: 16px;
+  text-transform: none;
+  border-bottom: none;
+  padding-bottom: 0;
+  animation: home-title-in 0.55s var(--ease) 0.06s backwards;
+}
+.category-page-title .dot {
+  color: var(--muted);
+  margin: 0 10px;
+}
+.category-page-subtitle {
+  color: var(--muted);
+  font-size: var(--text-xl);
+  line-height: 1.6;
+  max-width: 460px;
+  margin: 0 auto;
+  animation: home-title-in 0.55s var(--ease) 0.12s backwards;
+}
+.category-page-placeholder {
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+}
+
+/* Calendar-category cards -- one per entry in
+   /calendar/categories/{academic_year}/{term}, never a hardcoded list.
+   Sized and animated to be the visual centerpiece of the page rather than
+   a row of small buttons. */
+.category-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 28px;
+  padding: 4px;
+}
+.category-card {
+  position: relative;
+  flex: 0 1 300px;
+  min-height: 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: inherit;
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--navy);
+  background: linear-gradient(160deg, var(--surface) 0%, var(--surface-alt) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 40px 24px;
+  cursor: pointer;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.25s var(--ease),
+    box-shadow 0.3s var(--ease);
+  animation: fade-in-up 0.45s var(--ease) backwards;
+  animation-delay: calc(var(--card-i, 0) * 0.07s);
+}
+.category-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--navy-500), var(--navy-400));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease);
+}
+.category-card::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -30%;
+  width: 65%;
+  height: 65%;
+  background: radial-gradient(circle, rgba(31, 78, 121, 0.1), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+  pointer-events: none;
+}
+.category-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--navy-500) 0%, var(--navy-400) 100%);
+  color: var(--white);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.4s var(--ease), box-shadow 0.35s var(--ease);
+}
+.category-card-title {
+  line-height: 1.3;
+}
+.category-card-cta {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), color 0.25s var(--ease);
+}
+.category-card:hover {
+  background: var(--surface);
+  border-color: var(--navy);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+.category-card:hover::before {
+  transform: scaleX(1);
+}
+.category-card:hover::after {
+  opacity: 1;
+}
+.category-card:hover .category-card-icon {
+  transform: scale(1.08) rotate(-4deg);
+  box-shadow: var(--shadow-lg);
+}
+.category-card:hover .category-card-cta {
+  opacity: 1;
+  transform: translateY(0);
+  color: var(--navy);
+}
+.category-card:active {
+  transform: translateY(-2px);
+}
+
+.empty-calendar-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 56px 24px;
+}
+.empty-calendar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--surface-alt);
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.empty-calendar-title {
+  color: var(--navy);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+.empty-calendar-text {
+  color: var(--muted);
+  font-size: var(--text-base);
+  max-width: 340px;
+}
+
+.not-found-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 80px 24px;
+}
+.not-found-code {
+  font-size: var(--text-9xl);
+  font-weight: 800;
+  color: var(--navy);
+  opacity: 0.18;
+  line-height: 1;
+}
+.not-found-title {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: -6px;
+}
+.not-found-text {
+  color: var(--muted);
+  font-size: var(--text-base);
+  max-width: 360px;
+  margin-bottom: 8px;
+}
+
+/* Hierarchy breadcrumb -- "Institute > Computer Engineering > SY > Div A",
+   the primary wayfinding bar shown above whichever year/term/category/
+   org-unit node is currently being viewed (see GlobalBreadcrumb.jsx). A
+   real bordered/shadowed bar (not a bare text trail) at a genuinely
+   readable size -- this is the main way to jump around the whole
+   hierarchy, so it earns its own visual weight instead of reading as a
+   small caption easy to miss. */
+.org-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-6);
+  box-shadow: var(--shadow-xs);
+}
+.org-breadcrumb-crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-fast) var(--ease-snappy), color var(--duration-fast) var(--ease-snappy);
+}
+.org-breadcrumb-crumb:hover {
+  background: var(--navy-50);
+  color: var(--navy-600);
+}
+.org-breadcrumb-home {
+  font-weight: 700;
+}
+.org-breadcrumb-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.org-breadcrumb-sep {
+  display: inline-flex;
+  color: var(--text-faint);
+}
+/* The one crumb that IS the current page -- a filled pill rather than
+   plain bold text, so "where you are right now" is unmistakable at a
+   glance in a hierarchy that can run 5-6 levels deep. */
+.org-breadcrumb-current {
+  color: var(--navy-700);
+  font-weight: 700;
+  background: var(--navy-50);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+}
+
+/* Hierarchy drill-down browser -- the department/cohort/division
+   equivalent of CategoryCards, reusing its exact card language
+   (.category-page/.category-cards/.category-card) so browsing into a
+   department reads as the same product as browsing into a category, just
+   a smaller/secondary section rather than the page's main content. */
+.org-hierarchy-browser.category-page {
+  padding: 22px 24px 30px;
+}
+.org-hierarchy-header {
+  padding: 4px 8px 20px;
+  margin-bottom: 24px;
+}
+.org-hierarchy-browser .org-hierarchy-title {
+  font-size: var(--text-2xl);
+}
+.org-hierarchy-level-tag {
+  margin-left: 8px;
+  vertical-align: middle;
+}
+/* A real bordered callout, not plain italic text with near-zero padding --
+   this now renders as a top-of-page element in its own right (see
+   OrgHierarchySection.jsx), so it needs the same breathing room as the
+   other callout banners in this app (.org-self-link-banner, .home-hint),
+   not to look like an afterthought crammed against the page edge. */
+.org-hierarchy-empty {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  font-style: italic;
+  padding: 12px 16px;
+  background: var(--surface-alt);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+}
+.org-hierarchy-empty a {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+/* One right-aligned button that opens the actual card grid in a modal
+   (see .modal-content-wide in document.css) instead of the grid -- or a
+   banner describing it -- sitting inline in the page. Reused unchanged at
+   every hierarchy level (OrgHierarchyBrowser.jsx doesn't know or care
+   whether it's listing departments, cohorts, or divisions), and rendered
+   above that level's calendar content (see OrgHierarchySection.jsx), so
+   this reads as a top-of-page action, not a trailing section.
+   Both justify-content and margin-left matter here, for two different
+   contexts: standalone (org-unit pages), this is a plain full-width block
+   -- justify-content: flex-end right-aligns the button *within* it.
+   Nested as a flex item inside .page-toolbar-row (calendar.jsx, alongside
+   admin generate-controls), it shrinks to the button's own width instead
+   -- margin-left: auto is what pushes *that* to the row's right edge. */
+.org-hierarchy-trigger-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  animation: fade-in-up 0.35s var(--ease) backwards;
+}
+
+/* Always-available shortcut to a logged-in org unit's own calendar --
+   see OrgHierarchySection.jsx: the hierarchy browser only ever lists
+   accounts that have already published something, so without this direct
+   link a department/cohort/division with nothing published yet would have
+   no way to reach the one place it can start editing from. Same accented-
+   callout language as .today-status-banner (document.css) -- a navy left
+   border and inline layout -- so it reads as "an important status", not
+   an error or a passive hint. */
+.org-self-link-banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  padding: 12px 16px;
+  margin-bottom: 4px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--navy);
+  border-radius: var(--radius-sm);
+  animation: fade-in-up 0.35s var(--ease) backwards;
+}
+.org-self-link-text {
+  flex: 1 1 220px;
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+.org-self-link-text strong {
+  color: var(--navy);
+}
+

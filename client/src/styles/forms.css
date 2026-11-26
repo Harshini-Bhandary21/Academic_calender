@@ -1,0 +1,545 @@
+/* Generic panel wrapper reused by the form and holiday editor --
+   softly elevated and animated-in, deliberately more "app" than a flat
+   printed document, since the browsing/navigation chrome around the
+   calendar is its own polished product now, not just a document viewer.
+   Borderless, shadow-defined elevation (a light --shadow-xs at rest,
+   --shadow-md on hover) rather than a bordered box with a static shadow --
+   the current dashboard convention (Linear/Vercel-style), and one less
+   visible outline competing with the shadow for the same job. */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);
+  animation: fade-in-up 0.35s var(--ease) backwards;
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+/* A plain 1px divider, not the old thick 2px solid-navy underline -- the
+   heading's own navy/weight already carries the emphasis without a heavy
+   colored rule under it too (same fix applied to .sidebar-header). */
+.card h2 {
+  color: var(--navy);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Forms -- a plain stack of sections (the field grid, the holiday/
+   non-instructional-day lists, the submit button) with no shared layout
+   of its own, so without an explicit gap here each section only had
+   whatever margin its own rule happened to set (several had none),
+   making the whole form read as cramped/uneven. */
+form.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.coordinator-form-context {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+/* The "copy your parent's calendar to start editing" prompt (see
+   OrgCalendarSection.jsx) -- a plain (non-form) .card, which unlike
+   form.card has no built-in gap between its children, so its heading/
+   paragraph/button previously relied on each element's own unrelated
+   margin (10px, then 4px, then 0), reading as an uneven rhythm. A real
+   gap here, with the redundant margins it doubles up with zeroed out
+   locally rather than changed globally (both classes are shared/reused
+   elsewhere). */
+.org-copy-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.org-copy-prompt h2 {
+  margin-bottom: 0;
+}
+.org-copy-prompt .coordinator-form-context {
+  margin-bottom: 0;
+}
+.org-copy-prompt-btn {
+  align-self: flex-start;
+}
+.coordinator-form-context strong {
+  color: var(--navy);
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.field label {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--muted);
+}
+.field input,
+.field select,
+.field textarea {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-xs);
+  padding: 6px 8px;
+  font-size: var(--text-sm);
+  font-family: inherit;
+  transition: border-color var(--duration-fast) var(--ease-snappy), box-shadow var(--duration-fast) var(--ease-snappy);
+}
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: var(--shadow-focus-navy);
+}
+.field-checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+.field-error {
+  font-size: var(--text-2xs);
+  color: var(--error-fg);
+}
+.field-hint {
+  font-size: var(--text-2xs);
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 2px 0 0;
+}
+.field-error-retry {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--error-fg);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 9px 17px;
+  transition: background var(--duration-fast) var(--ease-snappy), border-color var(--duration-fast) var(--ease-snappy),
+    transform var(--duration-fast) var(--ease-snappy), box-shadow var(--duration-fast) var(--ease-snappy);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-navy);
+}
+.btn-primary {
+  background: var(--navy);
+  color: var(--white);
+}
+.btn-secondary {
+  background: var(--surface-alt);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-danger {
+  background: var(--error-bg);
+  color: var(--error-fg);
+  border: 1px solid #f3b9b3;
+}
+/* A lower-emphasis action that shouldn't compete with .btn-secondary's
+   filled look -- transparent until hovered, for things like a "Cancel"
+   sitting next to a real .btn-primary. */
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-alt);
+  border-color: var(--navy);
+  color: var(--navy);
+}
+/* Real color/elevation shifts on hover, not the old opacity-dim -- an
+   opacity fade is a flatter, more dated-reading hover than an actual
+   darker shade of the same color. */
+.btn-primary:hover:not(:disabled) {
+  background: var(--navy-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--surface);
+  border-color: var(--navy-300);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+.btn-danger:hover:not(:disabled) {
+  background: #fbdedb;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Org-unit admin panel -- reused unchanged whether it's the institute
+   admin managing departments, a department managing its cohorts/
+   divisions, or a cohort managing its divisions (see OrgUnitAdmin.jsx). An
+   icon-led header (matching the row icons below it) plus a live count
+   pill, and explicit "Add new"/"Existing accounts" section labels, so this
+   reads as a designed admin page with real sections instead of a form
+   with a list bolted underneath it. */
+.org-unit-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.org-unit-admin-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.org-unit-admin-header-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--navy-500) 0%, var(--navy-400) 100%);
+  color: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.org-unit-admin-header-text {
+  flex: 1;
+  min-width: 0;
+}
+.org-unit-admin-eyebrow {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--navy);
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+.org-unit-admin .org-unit-admin-title {
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  color: var(--navy);
+  text-transform: none;
+  letter-spacing: -0.01em;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 6px;
+}
+.org-unit-admin-subtitle {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 520px;
+}
+.org-unit-admin-count {
+  flex-shrink: 0;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  color: var(--navy);
+  background: var(--navy-50);
+  border: 1px solid var(--navy-100);
+  border-radius: var(--radius-full);
+  padding: 5px 12px;
+  white-space: nowrap;
+}
+
+.org-unit-section-label {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: -8px;
+}
+
+.org-unit-create-form {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+.org-unit-create-form .form-grid {
+  align-items: end;
+}
+
+/* Segmented Cohort/Division toggle -- replaces a plain <select> for the
+   one real choice a department makes (see childLevelOptionsFor), so both
+   options are visible and their icons distinguishable at a glance instead
+   of hidden behind a dropdown. */
+.org-unit-level-toggle {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+}
+.org-unit-level-toggle-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: background 0.18s var(--ease), color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+.org-unit-level-toggle-btn:hover:not(.active) {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+.org-unit-level-toggle-btn.active {
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+
+.org-unit-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+}
+.org-unit-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-alt);
+  color: var(--text-faint);
+}
+
+.org-unit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.org-unit-row {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  background: var(--surface);
+  transition: box-shadow 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease);
+  /* Rows appear one after another (see the mapped --row-i) rather than
+     all at once, the same staggered-entrance language OrgHierarchyBrowser's
+     --card-i cards already use. */
+  animation: fade-in-up 0.35s var(--ease) backwards;
+  animation-delay: calc(var(--row-i, 0) * 0.05s);
+}
+.org-unit-row:hover {
+  border-color: #a9b6c4;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.org-unit-row-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.org-unit-row-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--surface-alt);
+  color: var(--navy);
+}
+/* One accent per hierarchy level -- lets a mixed list (a department that
+   created both cohorts and divisions directly) read as a hierarchy at a
+   glance instead of identical circles differentiated only by the text
+   tag next to them. */
+.org-unit-row-icon-cohort {
+  background: var(--success-bg);
+  color: var(--success-fg);
+}
+.org-unit-row-icon-division {
+  background: var(--warning-bg);
+  color: var(--warning-fg);
+}
+.org-unit-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.org-unit-row-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.org-unit-name {
+  font-weight: 700;
+  color: var(--text);
+  font-size: var(--text-base);
+}
+.org-unit-level-tag {
+  font-size: var(--text-3xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--navy);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+}
+.org-unit-level-tag-cohort {
+  color: var(--success-fg);
+  background: var(--success-bg);
+  border-color: var(--success-border);
+}
+.org-unit-level-tag-division {
+  color: var(--warning-fg);
+  background: var(--warning-bg);
+  border-color: #f0e0a8;
+}
+.org-unit-created-at {
+  font-size: var(--text-2xs);
+  color: var(--muted);
+  margin-left: 2px;
+}
+.org-unit-password-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+}
+.org-unit-password-value {
+  font-family: "Courier New", monospace;
+  color: var(--text);
+  background: var(--surface-alt);
+  border-radius: 4px;
+  padding: 2px 7px;
+  letter-spacing: 0.5px;
+}
+.org-unit-password-badge {
+  font-style: italic;
+  color: var(--muted);
+  line-height: 1.4;
+  cursor: help;
+}
+.org-unit-reveal-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+}
+.org-unit-reveal-btn:hover {
+  color: var(--navy);
+}
+.org-unit-row-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.org-unit-reset-btn {
+  padding: 6px 12px;
+  font-size: var(--text-2xs);
+  white-space: nowrap;
+}
+.org-unit-delete-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease);
+}
+.org-unit-delete-btn:hover:not(:disabled) {
+  background: var(--error-bg);
+  color: var(--error-fg);
+}
+.org-unit-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.org-unit-reset-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+.org-unit-reset-row input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: 6px 8px;
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 640px) {
+  .org-unit-row-main {
+    flex-wrap: wrap;
+  }
+  .org-unit-row-info {
+    flex-basis: 100%;
+    order: 1;
+  }
+  .org-unit-row-actions {
+    order: 2;
+    margin-left: 52px;
+  }
+}
